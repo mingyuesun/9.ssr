@@ -790,7 +790,7 @@ app.get("*", function (req, res) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_App__WEBPACK_IMPORTED_MODULE_5__["default"], {
         store: store
       })));
-      res.send("\n\t\t\t\t<!DOCTYPE html>\n\t\t\t\t<html lang=\"en\">\n\t\t\t\t<head>\n\t\t\t\t\t<meta charset=\"UTF-8\">\n\t\t\t\t\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n\t\t\t\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n\t\t\t\t\t<title>ssr</title>\n\t\t\t\t</head>\n\t\t\t\t<body>\n\t\t\t\t\t<div id=\"root\">".concat(html, "</div>\n          <script>\n            var context = {state: ").concat(JSON.stringify(store.getState()), "}\n          </script>\n\t\t\t\t\t<script src=\"/client.js\"></script>\n\t\t\t\t</body>\n\t\t\t\t</html>\n\t\t"));
+      res.send("\n\t\t\t\t<!DOCTYPE html>\n\t\t\t\t<html lang=\"en\">\n\t\t\t\t<head>\n\t\t\t\t\t<meta charset=\"UTF-8\">\n\t\t\t\t\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n\t\t\t\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n\t\t\t\t\t<title>ssr</title>\n\t\t\t\t</head>\n\t\t\t\t<body>\n\t\t\t\t\t<div id=\"root\">".concat(html, "</div>\n          <script>\n            window.context = {state: ").concat(JSON.stringify(store.getState()), "}\n          </script>\n\t\t\t\t\t<script src=\"/client.js\"></script>\n\t\t\t\t</body>\n\t\t\t\t</html>\n\t\t"));
     });
   } else {
     res.sendStatus(404);

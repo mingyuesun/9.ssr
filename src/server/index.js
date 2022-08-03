@@ -52,7 +52,7 @@ app.get("*", (req, res) => {
 				<body>
 					<div id="root">${html}</div>
           <script>
-            var context = {state: ${JSON.stringify(store.getState())}}
+            window.context = {state: ${JSON.stringify(store.getState())}}
           </script>
 					<script src="/client.js"></script>
 				</body>
