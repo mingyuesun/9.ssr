@@ -14,26 +14,45 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/index.js");
 /* harmony import */ var _routesConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/routesConfig */ "./src/routesConfig.js");
 /* harmony import */ var _components_Header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/Header */ "./src/components/Header.js");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./store */ "./src/store/index.js");
 
 
 
 
 
 
-var store = (0,_store__WEBPACK_IMPORTED_MODULE_4__.getStore)();
-
-function App() {
+function App(_ref) {
+  var store = _ref.store;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_redux__WEBPACK_IMPORTED_MODULE_3__.Provider, {
     store: store
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Header__WEBPACK_IMPORTED_MODULE_2__["default"], null), (0,react_router_dom__WEBPACK_IMPORTED_MODULE_5__.useRoutes)(_routesConfig__WEBPACK_IMPORTED_MODULE_1__["default"]));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Header__WEBPACK_IMPORTED_MODULE_2__["default"], null), (0,react_router_dom__WEBPACK_IMPORTED_MODULE_4__.useRoutes)(_routesConfig__WEBPACK_IMPORTED_MODULE_1__["default"]));
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
+
+/***/ }),
+
+/***/ "./src/client/request.js":
+/*!*******************************!*\
+  !*** ./src/client/request.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+var request = axios__WEBPACK_IMPORTED_MODULE_0___default().create({
+  baseURL: '/'
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (request);
 
 /***/ }),
 
@@ -240,7 +259,13 @@ function UserList() {
       key: user.id
     }, user.name);
   }));
-}
+} // 当前的路由组件在服务器端获取数据的方法
+
+
+UserList.loadData = function (store) {
+  // 等此 Promise 完成后，store 中就有数据了， 即可以用 store 中的数据渲染带真实数据的组件，发给客户端
+  return store.dispatch((0,_store_actionCreators_user__WEBPACK_IMPORTED_MODULE_2__.getUserList)());
+};
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (UserList);
 
@@ -291,6 +316,27 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/server/request.js":
+/*!*******************************!*\
+  !*** ./src/server/request.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+var request = axios__WEBPACK_IMPORTED_MODULE_0___default().create({
+  baseURL: 'http://localhost:8000'
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (request);
+
+/***/ }),
+
 /***/ "./src/store/actionCreators/counter.js":
 /*!*********************************************!*\
   !*** ./src/store/actionCreators/counter.js ***!
@@ -325,13 +371,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "getUserList": () => (/* binding */ getUserList)
 /* harmony export */ });
 /* harmony import */ var _actionTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actionTypes */ "./src/store/actionTypes.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
-
 
 function getUserList() {
-  return function (dispatch, getState) {
-    return axios__WEBPACK_IMPORTED_MODULE_1___default().get('http://localhost:8000/api/users').then(function (res) {
+  return function (dispatch, getState, request) {
+    return request.get("/api/users").then(function (res) {
       var users = res.data.users;
       dispatch({
         type: _actionTypes__WEBPACK_IMPORTED_MODULE_0__.SET_USER_LIST,
@@ -377,29 +420,39 @@ var USER_ADD = 'USER_ADD';
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getStore": () => (/* binding */ getStore)
+/* harmony export */   "getClientStore": () => (/* binding */ getClientStore),
+/* harmony export */   "getServerStore": () => (/* binding */ getServerStore)
 /* harmony export */ });
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
-/* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! redux-thunk */ "./node_modules/redux-thunk/es/index.js");
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
+/* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! redux-thunk */ "./node_modules/redux-thunk/es/index.js");
 /* harmony import */ var redux_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux-promise */ "./node_modules/redux-promise/lib/index.js");
 /* harmony import */ var redux_logger__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux-logger */ "./node_modules/redux-logger/dist/redux-logger.js");
 /* harmony import */ var redux_logger__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(redux_logger__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _reducers_counter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./reducers/counter */ "./src/store/reducers/counter.js");
 /* harmony import */ var _reducers_user__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./reducers/user */ "./src/store/reducers/user.js");
+/* harmony import */ var _client_request__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/client/request */ "./src/client/request.js");
+/* harmony import */ var _server_request__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/server/request */ "./src/server/request.js");
 
 
 
 
 
 
-function getStore() {
-  var reducers = {
-    counter: _reducers_counter__WEBPACK_IMPORTED_MODULE_2__["default"],
-    user: _reducers_user__WEBPACK_IMPORTED_MODULE_3__["default"]
-  };
-  var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_4__.combineReducers)(reducers);
-  var store = (0,redux__WEBPACK_IMPORTED_MODULE_4__.applyMiddleware)(redux_thunk__WEBPACK_IMPORTED_MODULE_5__["default"], redux_promise__WEBPACK_IMPORTED_MODULE_0__["default"], (redux_logger__WEBPACK_IMPORTED_MODULE_1___default()))(redux__WEBPACK_IMPORTED_MODULE_4__.createStore)(combinedReducers);
-  return store;
+
+
+var clientThunk = redux_thunk__WEBPACK_IMPORTED_MODULE_6__["default"].withExtraArgument(_client_request__WEBPACK_IMPORTED_MODULE_4__["default"]);
+var serverThunk = redux_thunk__WEBPACK_IMPORTED_MODULE_6__["default"].withExtraArgument(_server_request__WEBPACK_IMPORTED_MODULE_5__["default"]);
+var reducers = {
+  counter: _reducers_counter__WEBPACK_IMPORTED_MODULE_2__["default"],
+  user: _reducers_user__WEBPACK_IMPORTED_MODULE_3__["default"]
+};
+var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_7__.combineReducers)(reducers);
+function getClientStore() {
+  var initialState = window.context.state;
+  return (0,redux__WEBPACK_IMPORTED_MODULE_7__.applyMiddleware)(clientThunk, redux_promise__WEBPACK_IMPORTED_MODULE_0__["default"], (redux_logger__WEBPACK_IMPORTED_MODULE_1___default()))(redux__WEBPACK_IMPORTED_MODULE_7__.createStore)(combinedReducers, initialState);
+}
+function getServerStore() {
+  return (0,redux__WEBPACK_IMPORTED_MODULE_7__.applyMiddleware)(serverThunk, redux_promise__WEBPACK_IMPORTED_MODULE_0__["default"], (redux_logger__WEBPACK_IMPORTED_MODULE_1___default()))(redux__WEBPACK_IMPORTED_MODULE_7__.createStore)(combinedReducers);
 }
 
 /***/ }),
@@ -42573,14 +42626,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/index.js");
 /* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/App */ "./src/App.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/store */ "./src/store/index.js");
 
 
 
 
+
+var store = (0,_store__WEBPACK_IMPORTED_MODULE_3__.getClientStore)();
 var root = document.getElementById("root");
-(0,react_dom_client__WEBPACK_IMPORTED_MODULE_1__.hydrateRoot)(root, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_3__.BrowserRouter, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_App__WEBPACK_IMPORTED_MODULE_2__["default"], null)));
+(0,react_dom_client__WEBPACK_IMPORTED_MODULE_1__.hydrateRoot)(root, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__.BrowserRouter, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_App__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  store: store
+})));
 })();
 
 /******/ })()

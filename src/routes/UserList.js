@@ -21,4 +21,10 @@ function UserList() {
 	)
 }
 
+// 当前的路由组件在服务器端获取数据的方法
+UserList.loadData = (store) => {
+	// 等此 Promise 完成后，store 中就有数据了， 即可以用 store 中的数据渲染带真实数据的组件，发给客户端
+	return store.dispatch(getUserList())
+}
+
 export default UserList
