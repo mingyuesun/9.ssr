@@ -26,3 +26,14 @@ export function logout() {
 		})
 	}
 }
+
+export function validate() {
+	return function(dispatch, getState, request) {
+		return request.get('/api/validate').then(res => {
+			const { success, data } = res.data
+			if (success) {
+				dispatch({ type: LOGIN_SUCCESS, payload: data })
+			}
+		})
+	}
+}

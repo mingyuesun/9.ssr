@@ -14,10 +14,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/index.js");
 /* harmony import */ var _routesConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/routesConfig */ "./src/routesConfig.js");
 /* harmony import */ var _components_Header__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/Header */ "./src/components/Header.js");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var _store_actionCreators_auth__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/store/actionCreators/auth */ "./src/store/actionCreators/auth.js");
+
 
 
 
@@ -28,8 +30,12 @@ function App(_ref) {
   var store = _ref.store;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_redux__WEBPACK_IMPORTED_MODULE_3__.Provider, {
     store: store
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Header__WEBPACK_IMPORTED_MODULE_2__["default"], null), (0,react_router_dom__WEBPACK_IMPORTED_MODULE_4__.useRoutes)(_routesConfig__WEBPACK_IMPORTED_MODULE_1__["default"]));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Header__WEBPACK_IMPORTED_MODULE_2__["default"], null), (0,react_router_dom__WEBPACK_IMPORTED_MODULE_5__.useRoutes)(_routesConfig__WEBPACK_IMPORTED_MODULE_1__["default"]));
 }
+
+App.loadData = function (store) {
+  return store.dispatch((0,_store_actionCreators_auth__WEBPACK_IMPORTED_MODULE_4__.validate)());
+};
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 
@@ -466,9 +472,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
-var request = axios__WEBPACK_IMPORTED_MODULE_0___default().create({
-  baseURL: 'http://localhost:8000'
-});
+
+var request = function request(req) {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default().create({
+    baseURL: 'http://localhost:8000',
+    headers: {
+      cookie: req.get('cookie') || ''
+    }
+  });
+};
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (request);
 
 /***/ }),
@@ -483,7 +496,8 @@ var request = axios__WEBPACK_IMPORTED_MODULE_0___default().create({
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "login": () => (/* binding */ login),
-/* harmony export */   "logout": () => (/* binding */ logout)
+/* harmony export */   "logout": () => (/* binding */ logout),
+/* harmony export */   "validate": () => (/* binding */ validate)
 /* harmony export */ });
 /* harmony import */ var _actionTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actionTypes */ "./src/store/actionTypes.js");
 /* harmony import */ var redux_first_history__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux-first-history */ "./node_modules/redux-first-history/build/es6/index.js");
@@ -522,6 +536,22 @@ function logout() {
           type: _actionTypes__WEBPACK_IMPORTED_MODULE_0__.LOGOUT_SUCCESS
         });
         dispatch((0,redux_first_history__WEBPACK_IMPORTED_MODULE_1__.push)('/login'));
+      }
+    });
+  };
+}
+function validate() {
+  return function (dispatch, getState, request) {
+    return request.get('/api/validate').then(function (res) {
+      var _res$data2 = res.data,
+          success = _res$data2.success,
+          data = _res$data2.data;
+
+      if (success) {
+        dispatch({
+          type: _actionTypes__WEBPACK_IMPORTED_MODULE_0__.LOGIN_SUCCESS,
+          payload: data
+        });
       }
     });
   };
@@ -621,8 +651,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "getClientStore": () => (/* binding */ getClientStore),
 /* harmony export */   "getServerStore": () => (/* binding */ getServerStore)
 /* harmony export */ });
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
-/* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! redux-thunk */ "./node_modules/redux-thunk/es/index.js");
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
+/* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! redux-thunk */ "./node_modules/redux-thunk/es/index.js");
 /* harmony import */ var redux_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux-promise */ "./node_modules/redux-promise/lib/index.js");
 /* harmony import */ var redux_logger__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux-logger */ "./node_modules/redux-logger/dist/redux-logger.js");
 /* harmony import */ var redux_logger__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(redux_logger__WEBPACK_IMPORTED_MODULE_1__);
@@ -631,7 +661,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _reducers_auth__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./reducers/auth */ "./src/store/reducers/auth.js");
 /* harmony import */ var _client_request__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/client/request */ "./src/client/request.js");
 /* harmony import */ var _server_request__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/server/request */ "./src/server/request.js");
-/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! history */ "./node_modules/history/index.js");
+/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! history */ "./node_modules/history/index.js");
 /* harmony import */ var redux_first_history__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! redux-first-history */ "./node_modules/redux-first-history/build/es6/index.js");
 
 
@@ -644,13 +674,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var clientThunk = redux_thunk__WEBPACK_IMPORTED_MODULE_8__["default"].withExtraArgument(_client_request__WEBPACK_IMPORTED_MODULE_5__["default"]);
-var serverThunk = redux_thunk__WEBPACK_IMPORTED_MODULE_8__["default"].withExtraArgument(_server_request__WEBPACK_IMPORTED_MODULE_6__["default"]);
 function getClientStore() {
   var initialState = window.context.state;
 
   var _createReduxHistoryCo = (0,redux_first_history__WEBPACK_IMPORTED_MODULE_7__.createReduxHistoryContext)({
-    history: (0,history__WEBPACK_IMPORTED_MODULE_9__.createBrowserHistory)()
+    history: (0,history__WEBPACK_IMPORTED_MODULE_8__.createBrowserHistory)()
   }),
       createReduxHistory = _createReduxHistoryCo.createReduxHistory,
       routerMiddleware = _createReduxHistoryCo.routerMiddleware,
@@ -662,17 +690,17 @@ function getClientStore() {
     auth: _reducers_auth__WEBPACK_IMPORTED_MODULE_4__["default"],
     router: routerReducer
   };
-  var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_10__.combineReducers)(reducers);
-  var store = (0,redux__WEBPACK_IMPORTED_MODULE_10__.applyMiddleware)(clientThunk, redux_promise__WEBPACK_IMPORTED_MODULE_0__["default"], routerMiddleware, (redux_logger__WEBPACK_IMPORTED_MODULE_1___default()))(redux__WEBPACK_IMPORTED_MODULE_10__.createStore)(combinedReducers, initialState);
+  var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_9__.combineReducers)(reducers);
+  var store = (0,redux__WEBPACK_IMPORTED_MODULE_9__.applyMiddleware)(redux_thunk__WEBPACK_IMPORTED_MODULE_10__["default"].withExtraArgument(_client_request__WEBPACK_IMPORTED_MODULE_5__["default"]), redux_promise__WEBPACK_IMPORTED_MODULE_0__["default"], routerMiddleware, (redux_logger__WEBPACK_IMPORTED_MODULE_1___default()))(redux__WEBPACK_IMPORTED_MODULE_9__.createStore)(combinedReducers, initialState);
   var history = createReduxHistory(store);
   return {
     store: store,
     history: history
   };
 }
-function getServerStore() {
+function getServerStore(req) {
   var _createReduxHistoryCo2 = (0,redux_first_history__WEBPACK_IMPORTED_MODULE_7__.createReduxHistoryContext)({
-    history: (0,history__WEBPACK_IMPORTED_MODULE_9__.createMemoryHistory)()
+    history: (0,history__WEBPACK_IMPORTED_MODULE_8__.createMemoryHistory)()
   }),
       createReduxHistory = _createReduxHistoryCo2.createReduxHistory,
       routerMiddleware = _createReduxHistoryCo2.routerMiddleware,
@@ -684,8 +712,8 @@ function getServerStore() {
     auth: _reducers_auth__WEBPACK_IMPORTED_MODULE_4__["default"],
     router: routerReducer
   };
-  var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_10__.combineReducers)(reducers);
-  var store = (0,redux__WEBPACK_IMPORTED_MODULE_10__.applyMiddleware)(serverThunk, redux_promise__WEBPACK_IMPORTED_MODULE_0__["default"], routerMiddleware, (redux_logger__WEBPACK_IMPORTED_MODULE_1___default()))(redux__WEBPACK_IMPORTED_MODULE_10__.createStore)(combinedReducers);
+  var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_9__.combineReducers)(reducers);
+  var store = (0,redux__WEBPACK_IMPORTED_MODULE_9__.applyMiddleware)(redux_thunk__WEBPACK_IMPORTED_MODULE_10__["default"].withExtraArgument((0,_server_request__WEBPACK_IMPORTED_MODULE_6__["default"])(req)), redux_promise__WEBPACK_IMPORTED_MODULE_0__["default"], routerMiddleware, (redux_logger__WEBPACK_IMPORTED_MODULE_1___default()))(redux__WEBPACK_IMPORTED_MODULE_9__.createStore)(combinedReducers);
   var history = createReduxHistory(store);
   return {
     store: store,

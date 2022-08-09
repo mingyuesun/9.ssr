@@ -20,6 +20,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Header__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/Header */ "./src/components/Header.js");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-redux */ "react-redux");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _store_actionCreators_auth__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/store/actionCreators/auth */ "./src/store/actionCreators/auth.js");
+
 
 
 
@@ -32,6 +34,10 @@ function App(_ref) {
     store: store
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Header__WEBPACK_IMPORTED_MODULE_3__["default"], null), (0,react_router_dom__WEBPACK_IMPORTED_MODULE_1__.useRoutes)(_routesConfig__WEBPACK_IMPORTED_MODULE_2__["default"]));
 }
+
+App.loadData = function (store) {
+  return store.dispatch((0,_store_actionCreators_auth__WEBPACK_IMPORTED_MODULE_5__.validate)());
+};
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 
@@ -465,9 +471,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "axios");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
-var request = axios__WEBPACK_IMPORTED_MODULE_0___default().create({
-  baseURL: 'http://localhost:8000'
-});
+
+var request = function request(req) {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default().create({
+    baseURL: 'http://localhost:8000',
+    headers: {
+      cookie: req.get('cookie') || ''
+    }
+  });
+};
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (request);
 
 /***/ }),
@@ -481,7 +494,8 @@ var request = axios__WEBPACK_IMPORTED_MODULE_0___default().create({
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "login": () => (/* binding */ login),
-/* harmony export */   "logout": () => (/* binding */ logout)
+/* harmony export */   "logout": () => (/* binding */ logout),
+/* harmony export */   "validate": () => (/* binding */ validate)
 /* harmony export */ });
 /* harmony import */ var _actionTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actionTypes */ "./src/store/actionTypes.js");
 /* harmony import */ var redux_first_history__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux-first-history */ "redux-first-history");
@@ -521,6 +535,22 @@ function logout() {
           type: _actionTypes__WEBPACK_IMPORTED_MODULE_0__.LOGOUT_SUCCESS
         });
         dispatch((0,redux_first_history__WEBPACK_IMPORTED_MODULE_1__.push)('/login'));
+      }
+    });
+  };
+}
+function validate() {
+  return function (dispatch, getState, request) {
+    return request.get('/api/validate').then(function (res) {
+      var _res$data2 = res.data,
+          success = _res$data2.success,
+          data = _res$data2.data;
+
+      if (success) {
+        dispatch({
+          type: _actionTypes__WEBPACK_IMPORTED_MODULE_0__.LOGIN_SUCCESS,
+          payload: data
+        });
       }
     });
   };
@@ -644,8 +674,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var clientThunk = redux_thunk__WEBPACK_IMPORTED_MODULE_1___default().withExtraArgument(_client_request__WEBPACK_IMPORTED_MODULE_7__["default"]);
-var serverThunk = redux_thunk__WEBPACK_IMPORTED_MODULE_1___default().withExtraArgument(_server_request__WEBPACK_IMPORTED_MODULE_8__["default"]);
 function getClientStore() {
   var initialState = window.context.state;
 
@@ -663,14 +691,14 @@ function getClientStore() {
     router: routerReducer
   };
   var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_0__.combineReducers)(reducers);
-  var store = (0,redux__WEBPACK_IMPORTED_MODULE_0__.applyMiddleware)(clientThunk, (redux_promise__WEBPACK_IMPORTED_MODULE_2___default()), routerMiddleware, (redux_logger__WEBPACK_IMPORTED_MODULE_3___default()))(redux__WEBPACK_IMPORTED_MODULE_0__.createStore)(combinedReducers, initialState);
+  var store = (0,redux__WEBPACK_IMPORTED_MODULE_0__.applyMiddleware)(redux_thunk__WEBPACK_IMPORTED_MODULE_1___default().withExtraArgument(_client_request__WEBPACK_IMPORTED_MODULE_7__["default"]), (redux_promise__WEBPACK_IMPORTED_MODULE_2___default()), routerMiddleware, (redux_logger__WEBPACK_IMPORTED_MODULE_3___default()))(redux__WEBPACK_IMPORTED_MODULE_0__.createStore)(combinedReducers, initialState);
   var history = createReduxHistory(store);
   return {
     store: store,
     history: history
   };
 }
-function getServerStore() {
+function getServerStore(req) {
   var _createReduxHistoryCo2 = (0,redux_first_history__WEBPACK_IMPORTED_MODULE_10__.createReduxHistoryContext)({
     history: (0,history__WEBPACK_IMPORTED_MODULE_9__.createMemoryHistory)()
   }),
@@ -685,7 +713,7 @@ function getServerStore() {
     router: routerReducer
   };
   var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_0__.combineReducers)(reducers);
-  var store = (0,redux__WEBPACK_IMPORTED_MODULE_0__.applyMiddleware)(serverThunk, (redux_promise__WEBPACK_IMPORTED_MODULE_2___default()), routerMiddleware, (redux_logger__WEBPACK_IMPORTED_MODULE_3___default()))(redux__WEBPACK_IMPORTED_MODULE_0__.createStore)(combinedReducers);
+  var store = (0,redux__WEBPACK_IMPORTED_MODULE_0__.applyMiddleware)(redux_thunk__WEBPACK_IMPORTED_MODULE_1___default().withExtraArgument((0,_server_request__WEBPACK_IMPORTED_MODULE_8__["default"])(req)), (redux_promise__WEBPACK_IMPORTED_MODULE_2___default()), routerMiddleware, (redux_logger__WEBPACK_IMPORTED_MODULE_3___default()))(redux__WEBPACK_IMPORTED_MODULE_0__.createStore)(combinedReducers);
   var history = createReduxHistory(store);
   return {
     store: store,
@@ -1084,7 +1112,7 @@ app.get("*", function (req, res) {
   });
 
   if (routeMatches) {
-    var _getServerStore = (0,_store__WEBPACK_IMPORTED_MODULE_6__.getServerStore)(),
+    var _getServerStore = (0,_store__WEBPACK_IMPORTED_MODULE_6__.getServerStore)(req),
         store = _getServerStore.store; // 因为本次渲染可能会调用多个数据加载方法，进行多次接口调用，有的可能会成功，有的可能会失败
     // 默认情况下，如果有一个接口调用失败了，则整个应用会加载失败，所以将调用结果不论成功还是失败都变为成功
 
@@ -1095,7 +1123,7 @@ app.get("*", function (req, res) {
       }, function (error) {
         return error;
       });
-    }).filter(Boolean);
+    }).concat(_App__WEBPACK_IMPORTED_MODULE_5__["default"].loadData && _App__WEBPACK_IMPORTED_MODULE_5__["default"].loadData(store)).filter(Boolean);
     Promise.all(loadDataPromise).then(function () {
       var html = (0,react_dom_server__WEBPACK_IMPORTED_MODULE_1__.renderToString)( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom_server__WEBPACK_IMPORTED_MODULE_2__.StaticRouter, {
         location: req.url
