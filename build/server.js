@@ -244,6 +244,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "react-redux");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "react-router-dom");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_router_dom__WEBPACK_IMPORTED_MODULE_2__);
+
 
 
 
@@ -251,6 +254,12 @@ function Profile() {
   var user = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(function (state) {
     return state.auth.user;
   });
+  var navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_2__.useNavigate)();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (!user) {
+      navigate('/login');
+    }
+  }, []);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", null, "\u5F53\u524D\u767B\u5F55\u7528\u6237\uFF1A"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, "name: ", user && user.name));
 }
 
@@ -475,6 +484,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "logout": () => (/* binding */ logout)
 /* harmony export */ });
 /* harmony import */ var _actionTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actionTypes */ "./src/store/actionTypes.js");
+/* harmony import */ var redux_first_history__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux-first-history */ "redux-first-history");
+/* harmony import */ var redux_first_history__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(redux_first_history__WEBPACK_IMPORTED_MODULE_1__);
+
 
 function login(user) {
   return function (dispatch, getState, request) {
@@ -489,6 +501,7 @@ function login(user) {
           type: _actionTypes__WEBPACK_IMPORTED_MODULE_0__.LOGIN_SUCCESS,
           payload: data
         });
+        dispatch((0,redux_first_history__WEBPACK_IMPORTED_MODULE_1__.push)('/profile'));
       } else {
         dispatch({
           type: _actionTypes__WEBPACK_IMPORTED_MODULE_0__.LOGIN_ERROR,
@@ -507,6 +520,7 @@ function logout() {
         dispatch({
           type: _actionTypes__WEBPACK_IMPORTED_MODULE_0__.LOGOUT_SUCCESS
         });
+        dispatch((0,redux_first_history__WEBPACK_IMPORTED_MODULE_1__.push)('/login'));
       }
     });
   };
@@ -615,6 +629,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _reducers_auth__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./reducers/auth */ "./src/store/reducers/auth.js");
 /* harmony import */ var _client_request__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/client/request */ "./src/client/request.js");
 /* harmony import */ var _server_request__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/server/request */ "./src/server/request.js");
+/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! history */ "history");
+/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(history__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var redux_first_history__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! redux-first-history */ "redux-first-history");
+/* harmony import */ var redux_first_history__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(redux_first_history__WEBPACK_IMPORTED_MODULE_10__);
+
+
 
 
 
@@ -626,18 +646,51 @@ __webpack_require__.r(__webpack_exports__);
 
 var clientThunk = redux_thunk__WEBPACK_IMPORTED_MODULE_1___default().withExtraArgument(_client_request__WEBPACK_IMPORTED_MODULE_7__["default"]);
 var serverThunk = redux_thunk__WEBPACK_IMPORTED_MODULE_1___default().withExtraArgument(_server_request__WEBPACK_IMPORTED_MODULE_8__["default"]);
-var reducers = {
-  counter: _reducers_counter__WEBPACK_IMPORTED_MODULE_4__["default"],
-  user: _reducers_user__WEBPACK_IMPORTED_MODULE_5__["default"],
-  auth: _reducers_auth__WEBPACK_IMPORTED_MODULE_6__["default"]
-};
-var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_0__.combineReducers)(reducers);
 function getClientStore() {
   var initialState = window.context.state;
-  return (0,redux__WEBPACK_IMPORTED_MODULE_0__.applyMiddleware)(clientThunk, (redux_promise__WEBPACK_IMPORTED_MODULE_2___default()), (redux_logger__WEBPACK_IMPORTED_MODULE_3___default()))(redux__WEBPACK_IMPORTED_MODULE_0__.createStore)(combinedReducers, initialState);
+
+  var _createReduxHistoryCo = (0,redux_first_history__WEBPACK_IMPORTED_MODULE_10__.createReduxHistoryContext)({
+    history: (0,history__WEBPACK_IMPORTED_MODULE_9__.createBrowserHistory)()
+  }),
+      createReduxHistory = _createReduxHistoryCo.createReduxHistory,
+      routerMiddleware = _createReduxHistoryCo.routerMiddleware,
+      routerReducer = _createReduxHistoryCo.routerReducer;
+
+  var reducers = {
+    counter: _reducers_counter__WEBPACK_IMPORTED_MODULE_4__["default"],
+    user: _reducers_user__WEBPACK_IMPORTED_MODULE_5__["default"],
+    auth: _reducers_auth__WEBPACK_IMPORTED_MODULE_6__["default"],
+    router: routerReducer
+  };
+  var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_0__.combineReducers)(reducers);
+  var store = (0,redux__WEBPACK_IMPORTED_MODULE_0__.applyMiddleware)(clientThunk, (redux_promise__WEBPACK_IMPORTED_MODULE_2___default()), routerMiddleware, (redux_logger__WEBPACK_IMPORTED_MODULE_3___default()))(redux__WEBPACK_IMPORTED_MODULE_0__.createStore)(combinedReducers, initialState);
+  var history = createReduxHistory(store);
+  return {
+    store: store,
+    history: history
+  };
 }
 function getServerStore() {
-  return (0,redux__WEBPACK_IMPORTED_MODULE_0__.applyMiddleware)(serverThunk, (redux_promise__WEBPACK_IMPORTED_MODULE_2___default()), (redux_logger__WEBPACK_IMPORTED_MODULE_3___default()))(redux__WEBPACK_IMPORTED_MODULE_0__.createStore)(combinedReducers);
+  var _createReduxHistoryCo2 = (0,redux_first_history__WEBPACK_IMPORTED_MODULE_10__.createReduxHistoryContext)({
+    history: (0,history__WEBPACK_IMPORTED_MODULE_9__.createMemoryHistory)()
+  }),
+      createReduxHistory = _createReduxHistoryCo2.createReduxHistory,
+      routerMiddleware = _createReduxHistoryCo2.routerMiddleware,
+      routerReducer = _createReduxHistoryCo2.routerReducer;
+
+  var reducers = {
+    counter: _reducers_counter__WEBPACK_IMPORTED_MODULE_4__["default"],
+    user: _reducers_user__WEBPACK_IMPORTED_MODULE_5__["default"],
+    auth: _reducers_auth__WEBPACK_IMPORTED_MODULE_6__["default"],
+    router: routerReducer
+  };
+  var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_0__.combineReducers)(reducers);
+  var store = (0,redux__WEBPACK_IMPORTED_MODULE_0__.applyMiddleware)(serverThunk, (redux_promise__WEBPACK_IMPORTED_MODULE_2___default()), routerMiddleware, (redux_logger__WEBPACK_IMPORTED_MODULE_3___default()))(redux__WEBPACK_IMPORTED_MODULE_0__.createStore)(combinedReducers);
+  var history = createReduxHistory(store);
+  return {
+    store: store,
+    history: history
+  };
 }
 
 /***/ }),
@@ -808,6 +861,16 @@ module.exports = require("express-http-proxy");
 
 /***/ }),
 
+/***/ "history":
+/*!**************************!*\
+  !*** external "history" ***!
+  \**************************/
+/***/ ((module) => {
+
+module.exports = require("history");
+
+/***/ }),
+
 /***/ "react":
 /*!************************!*\
   !*** external "react" ***!
@@ -865,6 +928,16 @@ module.exports = require("react-router-dom/server");
 /***/ ((module) => {
 
 module.exports = require("redux");
+
+/***/ }),
+
+/***/ "redux-first-history":
+/*!**************************************!*\
+  !*** external "redux-first-history" ***!
+  \**************************************/
+/***/ ((module) => {
+
+module.exports = require("redux-first-history");
 
 /***/ }),
 
@@ -1011,8 +1084,10 @@ app.get("*", function (req, res) {
   });
 
   if (routeMatches) {
-    var store = (0,_store__WEBPACK_IMPORTED_MODULE_6__.getServerStore)(); // 因为本次渲染可能会调用多个数据加载方法，进行多次接口调用，有的可能会成功，有的可能会失败
+    var _getServerStore = (0,_store__WEBPACK_IMPORTED_MODULE_6__.getServerStore)(),
+        store = _getServerStore.store; // 因为本次渲染可能会调用多个数据加载方法，进行多次接口调用，有的可能会成功，有的可能会失败
     // 默认情况下，如果有一个接口调用失败了，则整个应用会加载失败，所以将调用结果不论成功还是失败都变为成功
+
 
     var loadDataPromise = routeMatches.map(function (match) {
       return match.route.element.type.loadData && match.route.element.type.loadData(store).then(function (data) {

@@ -21,7 +21,7 @@ app.use(
 app.get("*", (req, res) => {
   const routeMatches = matchRoutes(routesConfig, { pathname: req.url })
   if (routeMatches) {
-    const store = getServerStore()
+    const { store } = getServerStore()
     // 因为本次渲染可能会调用多个数据加载方法，进行多次接口调用，有的可能会成功，有的可能会失败
     // 默认情况下，如果有一个接口调用失败了，则整个应用会加载失败，所以将调用结果不论成功还是失败都变为成功
     const loadDataPromise = routeMatches

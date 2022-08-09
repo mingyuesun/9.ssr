@@ -244,6 +244,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router/index.js");
+
 
 
 
@@ -251,6 +253,12 @@ function Profile() {
   var user = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(function (state) {
     return state.auth.user;
   });
+  var navigate = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_2__.useNavigate)();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (!user) {
+      navigate('/login');
+    }
+  }, []);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", null, "\u5F53\u524D\u767B\u5F55\u7528\u6237\uFF1A"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", null, "name: ", user && user.name));
 }
 
@@ -478,6 +486,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "logout": () => (/* binding */ logout)
 /* harmony export */ });
 /* harmony import */ var _actionTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actionTypes */ "./src/store/actionTypes.js");
+/* harmony import */ var redux_first_history__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux-first-history */ "./node_modules/redux-first-history/build/es6/index.js");
+
 
 function login(user) {
   return function (dispatch, getState, request) {
@@ -492,6 +502,7 @@ function login(user) {
           type: _actionTypes__WEBPACK_IMPORTED_MODULE_0__.LOGIN_SUCCESS,
           payload: data
         });
+        dispatch((0,redux_first_history__WEBPACK_IMPORTED_MODULE_1__.push)('/profile'));
       } else {
         dispatch({
           type: _actionTypes__WEBPACK_IMPORTED_MODULE_0__.LOGIN_ERROR,
@@ -510,6 +521,7 @@ function logout() {
         dispatch({
           type: _actionTypes__WEBPACK_IMPORTED_MODULE_0__.LOGOUT_SUCCESS
         });
+        dispatch((0,redux_first_history__WEBPACK_IMPORTED_MODULE_1__.push)('/login'));
       }
     });
   };
@@ -609,8 +621,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "getClientStore": () => (/* binding */ getClientStore),
 /* harmony export */   "getServerStore": () => (/* binding */ getServerStore)
 /* harmony export */ });
-/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
-/* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! redux-thunk */ "./node_modules/redux-thunk/es/index.js");
+/* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
+/* harmony import */ var redux_thunk__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! redux-thunk */ "./node_modules/redux-thunk/es/index.js");
 /* harmony import */ var redux_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux-promise */ "./node_modules/redux-promise/lib/index.js");
 /* harmony import */ var redux_logger__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! redux-logger */ "./node_modules/redux-logger/dist/redux-logger.js");
 /* harmony import */ var redux_logger__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(redux_logger__WEBPACK_IMPORTED_MODULE_1__);
@@ -619,6 +631,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _reducers_auth__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./reducers/auth */ "./src/store/reducers/auth.js");
 /* harmony import */ var _client_request__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/client/request */ "./src/client/request.js");
 /* harmony import */ var _server_request__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/server/request */ "./src/server/request.js");
+/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! history */ "./node_modules/history/index.js");
+/* harmony import */ var redux_first_history__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! redux-first-history */ "./node_modules/redux-first-history/build/es6/index.js");
 
 
 
@@ -628,20 +642,55 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var clientThunk = redux_thunk__WEBPACK_IMPORTED_MODULE_7__["default"].withExtraArgument(_client_request__WEBPACK_IMPORTED_MODULE_5__["default"]);
-var serverThunk = redux_thunk__WEBPACK_IMPORTED_MODULE_7__["default"].withExtraArgument(_server_request__WEBPACK_IMPORTED_MODULE_6__["default"]);
-var reducers = {
-  counter: _reducers_counter__WEBPACK_IMPORTED_MODULE_2__["default"],
-  user: _reducers_user__WEBPACK_IMPORTED_MODULE_3__["default"],
-  auth: _reducers_auth__WEBPACK_IMPORTED_MODULE_4__["default"]
-};
-var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_8__.combineReducers)(reducers);
+
+
+var clientThunk = redux_thunk__WEBPACK_IMPORTED_MODULE_8__["default"].withExtraArgument(_client_request__WEBPACK_IMPORTED_MODULE_5__["default"]);
+var serverThunk = redux_thunk__WEBPACK_IMPORTED_MODULE_8__["default"].withExtraArgument(_server_request__WEBPACK_IMPORTED_MODULE_6__["default"]);
 function getClientStore() {
   var initialState = window.context.state;
-  return (0,redux__WEBPACK_IMPORTED_MODULE_8__.applyMiddleware)(clientThunk, redux_promise__WEBPACK_IMPORTED_MODULE_0__["default"], (redux_logger__WEBPACK_IMPORTED_MODULE_1___default()))(redux__WEBPACK_IMPORTED_MODULE_8__.createStore)(combinedReducers, initialState);
+
+  var _createReduxHistoryCo = (0,redux_first_history__WEBPACK_IMPORTED_MODULE_7__.createReduxHistoryContext)({
+    history: (0,history__WEBPACK_IMPORTED_MODULE_9__.createBrowserHistory)()
+  }),
+      createReduxHistory = _createReduxHistoryCo.createReduxHistory,
+      routerMiddleware = _createReduxHistoryCo.routerMiddleware,
+      routerReducer = _createReduxHistoryCo.routerReducer;
+
+  var reducers = {
+    counter: _reducers_counter__WEBPACK_IMPORTED_MODULE_2__["default"],
+    user: _reducers_user__WEBPACK_IMPORTED_MODULE_3__["default"],
+    auth: _reducers_auth__WEBPACK_IMPORTED_MODULE_4__["default"],
+    router: routerReducer
+  };
+  var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_10__.combineReducers)(reducers);
+  var store = (0,redux__WEBPACK_IMPORTED_MODULE_10__.applyMiddleware)(clientThunk, redux_promise__WEBPACK_IMPORTED_MODULE_0__["default"], routerMiddleware, (redux_logger__WEBPACK_IMPORTED_MODULE_1___default()))(redux__WEBPACK_IMPORTED_MODULE_10__.createStore)(combinedReducers, initialState);
+  var history = createReduxHistory(store);
+  return {
+    store: store,
+    history: history
+  };
 }
 function getServerStore() {
-  return (0,redux__WEBPACK_IMPORTED_MODULE_8__.applyMiddleware)(serverThunk, redux_promise__WEBPACK_IMPORTED_MODULE_0__["default"], (redux_logger__WEBPACK_IMPORTED_MODULE_1___default()))(redux__WEBPACK_IMPORTED_MODULE_8__.createStore)(combinedReducers);
+  var _createReduxHistoryCo2 = (0,redux_first_history__WEBPACK_IMPORTED_MODULE_7__.createReduxHistoryContext)({
+    history: (0,history__WEBPACK_IMPORTED_MODULE_9__.createMemoryHistory)()
+  }),
+      createReduxHistory = _createReduxHistoryCo2.createReduxHistory,
+      routerMiddleware = _createReduxHistoryCo2.routerMiddleware,
+      routerReducer = _createReduxHistoryCo2.routerReducer;
+
+  var reducers = {
+    counter: _reducers_counter__WEBPACK_IMPORTED_MODULE_2__["default"],
+    user: _reducers_user__WEBPACK_IMPORTED_MODULE_3__["default"],
+    auth: _reducers_auth__WEBPACK_IMPORTED_MODULE_4__["default"],
+    router: routerReducer
+  };
+  var combinedReducers = (0,redux__WEBPACK_IMPORTED_MODULE_10__.combineReducers)(reducers);
+  var store = (0,redux__WEBPACK_IMPORTED_MODULE_10__.applyMiddleware)(serverThunk, redux_promise__WEBPACK_IMPORTED_MODULE_0__["default"], routerMiddleware, (redux_logger__WEBPACK_IMPORTED_MODULE_1___default()))(redux__WEBPACK_IMPORTED_MODULE_10__.createStore)(combinedReducers);
+  var history = createReduxHistory(store);
+  return {
+    store: store,
+    history: history
+  };
 }
 
 /***/ }),
@@ -40671,6 +40720,414 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./node_modules/redux-first-history/build/es6/actions.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/redux-first-history/build/es6/actions.js ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CALL_HISTORY_METHOD": () => (/* binding */ CALL_HISTORY_METHOD),
+/* harmony export */   "LOCATION_CHANGE": () => (/* binding */ LOCATION_CHANGE),
+/* harmony export */   "back": () => (/* binding */ back),
+/* harmony export */   "forward": () => (/* binding */ forward),
+/* harmony export */   "go": () => (/* binding */ go),
+/* harmony export */   "goBack": () => (/* binding */ goBack),
+/* harmony export */   "goForward": () => (/* binding */ goForward),
+/* harmony export */   "locationChangeAction": () => (/* binding */ locationChangeAction),
+/* harmony export */   "push": () => (/* binding */ push),
+/* harmony export */   "replace": () => (/* binding */ replace)
+/* harmony export */ });
+const CALL_HISTORY_METHOD = '@@router/CALL_HISTORY_METHOD';
+const LOCATION_CHANGE = '@@router/LOCATION_CHANGE';
+const locationChangeAction = (location, action) => ({
+    type: LOCATION_CHANGE,
+    payload: { location, action },
+});
+function updateLocation(method) {
+    // @ts-ignore
+    return (...args) => ({
+        type: CALL_HISTORY_METHOD,
+        payload: { method, args },
+    });
+}
+const push = updateLocation('push');
+const replace = updateLocation('replace');
+const go = updateLocation('go');
+const goBack = updateLocation('goBack');
+const goForward = updateLocation('goForward');
+const back = updateLocation('back');
+const forward = updateLocation('forward');
+
+
+/***/ }),
+
+/***/ "./node_modules/redux-first-history/build/es6/create.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/redux-first-history/build/es6/create.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "createReduxHistoryContext": () => (/* binding */ createReduxHistoryContext)
+/* harmony export */ });
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./actions */ "./node_modules/redux-first-history/build/es6/actions.js");
+/* harmony import */ var _middleware__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./middleware */ "./node_modules/redux-first-history/build/es6/middleware.js");
+/* harmony import */ var _reducer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./reducer */ "./node_modules/redux-first-history/build/es6/reducer.js");
+
+
+
+const createReduxHistoryContext = ({ history, routerReducerKey = 'router', reduxTravelling = false, showHistoryAction = false, selectRouterState, savePreviousLocations = 0, batch, reachGlobalHistory, }) => {
+    let listenObject = false;
+    // @ts-ignore
+    const callListener = (listener, location, action) => listenObject ? listener({ location, action }) : listener(location, action);
+    if (typeof batch !== 'function') {
+        batch = fn => {
+            fn();
+        };
+    }
+    /** ********************************************  REDUX REDUCER ***************************************************** */
+    if (typeof selectRouterState !== 'function') {
+        selectRouterState = state => state[routerReducerKey];
+    }
+    const routerReducer = (0,_reducer__WEBPACK_IMPORTED_MODULE_2__.createRouterReducer)({ savePreviousLocations });
+    const routerMiddleware = (0,_middleware__WEBPACK_IMPORTED_MODULE_1__.createRouterMiddleware)({ history, showHistoryAction });
+    /** ******************************************  REDUX TRAVELLING  ************************************************** */
+    let isReduxTravelling = false;
+    const handleReduxTravelling = (store) => {
+        const locationEqual = (loc1, loc2) => loc1.pathname === loc2.pathname && loc1.search === loc2.search && loc1.hash === loc2.hash;
+        return store.subscribe(() => {
+            // @ts-ignore
+            const sLoc = selectRouterState(store.getState()).location;
+            const hLoc = history.location;
+            if (sLoc && hLoc && !locationEqual(sLoc, hLoc)) {
+                isReduxTravelling = true;
+                history.push({ pathname: sLoc.pathname, search: sLoc.search, hash: sLoc.hash });
+            }
+        });
+    };
+    /** ******************************************  REDUX FIRST HISTORY   *********************************************** */
+    const createReduxHistory = (store) => {
+        let registeredCallback = [];
+        // init location store
+        store.dispatch((0,_actions__WEBPACK_IMPORTED_MODULE_0__.locationChangeAction)(history.location, history.action));
+        if (reduxTravelling) {
+            handleReduxTravelling(store);
+        }
+        // listen to history API
+        // @ts-ignore
+        history.listen((location, action) => {
+            // support history v5
+            // @ts-ignore
+            if (location.location) {
+                // @ts-ignore
+                action = location.action;
+                // @ts-ignore
+                location = location.location;
+                listenObject = true;
+            }
+            if (isReduxTravelling) {
+                isReduxTravelling = false;
+                // notify registered callback travelling
+                // @ts-ignore
+                const routerState = selectRouterState(store.getState());
+                registeredCallback.forEach(c => callListener(c, routerState.location, routerState.action));
+                return;
+            }
+            // @ts-ignore
+            batch(() => {
+                store.dispatch((0,_actions__WEBPACK_IMPORTED_MODULE_0__.locationChangeAction)(location, action));
+                // @ts-ignore
+                const routerState = selectRouterState(store.getState());
+                registeredCallback.forEach(c => callListener(c, routerState.location, routerState.action));
+            });
+        });
+        // listen to reach globalHistory (support "navigate")
+        if (reachGlobalHistory) {
+            reachGlobalHistory.listen(({ location, action }) => {
+                if (action !== `POP`) {
+                    const loc = {
+                        pathname: location.pathname,
+                        search: location.search,
+                        hash: location.hash,
+                        key: location.key,
+                        state: location.state,
+                    };
+                    // @ts-ignore
+                    batch(() => {
+                        // @ts-ignore
+                        store.dispatch((0,_actions__WEBPACK_IMPORTED_MODULE_0__.locationChangeAction)(loc, action));
+                        // @ts-ignore
+                        const routerState = selectRouterState(store.getState());
+                        registeredCallback.forEach(c => callListener(c, routerState.location, routerState.action));
+                    });
+                }
+            });
+        }
+        // @ts-ignore
+        return {
+            block: history.block,
+            createHref: history.createHref,
+            push: (...args) => store.dispatch((0,_actions__WEBPACK_IMPORTED_MODULE_0__.push)(...args)),
+            replace: (...args) => store.dispatch((0,_actions__WEBPACK_IMPORTED_MODULE_0__.replace)(...args)),
+            go: (...args) => store.dispatch((0,_actions__WEBPACK_IMPORTED_MODULE_0__.go)(...args)),
+            // @ts-ignore
+            goBack: (...args) => store.dispatch((0,_actions__WEBPACK_IMPORTED_MODULE_0__.goBack)(...args)),
+            // @ts-ignore
+            goForward: (...args) => 
+            // @ts-ignore
+            store.dispatch((0,_actions__WEBPACK_IMPORTED_MODULE_0__.goForward)(...args)),
+            // @ts-ignore
+            back: (...args) => store.dispatch((0,_actions__WEBPACK_IMPORTED_MODULE_0__.back)(...args)),
+            // @ts-ignore
+            forward: (...args) => store.dispatch((0,_actions__WEBPACK_IMPORTED_MODULE_0__.forward)(...args)),
+            listen: callback => {
+                if (registeredCallback.indexOf(callback) < 0) {
+                    registeredCallback.push(callback);
+                }
+                return () => {
+                    registeredCallback = registeredCallback.filter(c => c !== callback);
+                };
+            },
+            // @ts-ignore
+            get location() {
+                // @ts-ignore
+                return selectRouterState(store.getState()).location;
+            },
+            // @ts-ignore
+            get action() {
+                // @ts-ignore
+                return selectRouterState(store.getState()).action;
+            },
+            get length() {
+                // @ts-ignore
+                return history.length;
+            },
+            // @ts-ignore
+            get listenObject() {
+                return listenObject;
+            },
+        };
+    };
+    return { routerReducer, routerMiddleware, createReduxHistory };
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/redux-first-history/build/es6/index.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/redux-first-history/build/es6/index.js ***!
+  \*************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CALL_HISTORY_METHOD": () => (/* reexport safe */ _actions__WEBPACK_IMPORTED_MODULE_0__.CALL_HISTORY_METHOD),
+/* harmony export */   "LOCATION_CHANGE": () => (/* reexport safe */ _actions__WEBPACK_IMPORTED_MODULE_0__.LOCATION_CHANGE),
+/* harmony export */   "createReduxHistoryContext": () => (/* reexport safe */ _create__WEBPACK_IMPORTED_MODULE_2__.createReduxHistoryContext),
+/* harmony export */   "go": () => (/* reexport safe */ _actions__WEBPACK_IMPORTED_MODULE_0__.go),
+/* harmony export */   "goBack": () => (/* reexport safe */ _actions__WEBPACK_IMPORTED_MODULE_0__.goBack),
+/* harmony export */   "goForward": () => (/* reexport safe */ _actions__WEBPACK_IMPORTED_MODULE_0__.goForward),
+/* harmony export */   "push": () => (/* reexport safe */ _actions__WEBPACK_IMPORTED_MODULE_0__.push),
+/* harmony export */   "reachify": () => (/* reexport safe */ _reachify__WEBPACK_IMPORTED_MODULE_1__.reachify),
+/* harmony export */   "replace": () => (/* reexport safe */ _actions__WEBPACK_IMPORTED_MODULE_0__.replace)
+/* harmony export */ });
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./actions */ "./node_modules/redux-first-history/build/es6/actions.js");
+/* harmony import */ var _reachify__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./reachify */ "./node_modules/redux-first-history/build/es6/reachify.js");
+/* harmony import */ var _create__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./create */ "./node_modules/redux-first-history/build/es6/create.js");
+
+
+
+
+
+/***/ }),
+
+/***/ "./node_modules/redux-first-history/build/es6/middleware.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/redux-first-history/build/es6/middleware.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "createRouterMiddleware": () => (/* binding */ createRouterMiddleware)
+/* harmony export */ });
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./actions */ "./node_modules/redux-first-history/build/es6/actions.js");
+
+const createRouterMiddleware = ({ history, showHistoryAction }) => () => (next) => (action) => {
+    if (action.type !== _actions__WEBPACK_IMPORTED_MODULE_0__.CALL_HISTORY_METHOD) {
+        return next(action);
+    }
+    const method = action.payload.method;
+    // @ts-ignore
+    const args = action.payload.args;
+    // eslint-disable-next-line default-case
+    switch (method) {
+        case 'push':
+            history.push(...args);
+            break;
+        case 'replace':
+            history.replace(...args);
+            break;
+        case 'go':
+            history.go(...args);
+            break;
+        case 'back':
+        case 'goBack':
+            // @ts-ignore
+            history.goBack && history.goBack(...args);
+            //@ts-ignore //support history 5.x
+            history.back && history.back(...args);
+            break;
+        case 'forward':
+        case 'goForward':
+            // @ts-ignore
+            history.goForward && history.goForward(...args);
+            //@ts-ignore //support history 5.x
+            history.forward && history.forward(...args);
+            break;
+    }
+    if (showHistoryAction)
+        return next(action);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/redux-first-history/build/es6/reachify.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/redux-first-history/build/es6/reachify.js ***!
+  \****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "reachify": () => (/* binding */ reachify)
+/* harmony export */ });
+const reachify = (reduxHistory) => {
+    let transitioning = false;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    let resolveTransition = () => { };
+    return {
+        // eslint-disable-next-line no-underscore-dangle
+        _onTransitionComplete() {
+            transitioning = false;
+            resolveTransition();
+        },
+        listen(listener) {
+            if (reduxHistory.listenObject) {
+                // @ts-ignore
+                return reduxHistory.listen(listener);
+            }
+            // @ts-ignore
+            return reduxHistory.listen((location, action) => listener({ location, action }));
+        },
+        // @ts-ignore
+        navigate(to, { state, replace = false } = {}) {
+            if (transitioning || replace) {
+                reduxHistory.replace(to, state);
+            }
+            else {
+                reduxHistory.push(to, state);
+            }
+            transitioning = true;
+            // eslint-disable-next-line no-return-assign
+            // @ts-ignore
+            return new Promise(res => (resolveTransition = res));
+        },
+        // @ts-ignore
+        get location() {
+            return reduxHistory.location;
+        },
+        get transitioning() {
+            return transitioning;
+        },
+    };
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/redux-first-history/build/es6/reducer.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/redux-first-history/build/es6/reducer.js ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "createRouterReducer": () => (/* binding */ createRouterReducer)
+/* harmony export */ });
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./actions */ "./node_modules/redux-first-history/build/es6/actions.js");
+
+const createRouterReducer = ({ savePreviousLocations = 0 }) => {
+    const initialState = {
+        location: null,
+        action: null,
+    };
+    // eslint-disable-next-line no-restricted-globals
+    const numLocationToTrack = isNaN(savePreviousLocations) ? 0 : savePreviousLocations;
+    if (numLocationToTrack)
+        initialState.previousLocations = [];
+    return (state = initialState, { type, payload } = {}) => {
+        if (type === _actions__WEBPACK_IMPORTED_MODULE_0__.LOCATION_CHANGE) {
+            const { location, action } = payload || {};
+            const previousLocations = numLocationToTrack // @ts-ignore
+                ? [{ location, action }, ...state.previousLocations.slice(0, numLocationToTrack)]
+                : undefined;
+            return Object.assign(Object.assign({}, state), { location, action, previousLocations });
+        }
+        return state;
+    };
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/redux-first-history/rr6/index.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/redux-first-history/rr6/index.js ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+   return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.HistoryRouter = void 0;
+/* eslint-disable react/no-children-prop */
+var react_1 = __importDefault(__webpack_require__(/*! react */ "./node_modules/react/index.js"));
+var react_router_1 = __webpack_require__(/*! react-router */ "./node_modules/react-router/index.js");
+function HistoryRouter(_a) {
+   var basename = _a.basename, children = _a.children, history = _a.history;
+   var _b = react_1.default.useState({
+      action: history.action,
+      location: history.location,
+   }), state = _b[0], setState = _b[1];
+   react_1.default.useLayoutEffect(function () { return history.listen(setState); }, [history]);
+   return react_1.default.createElement(react_router_1.Router, {
+      basename: basename,
+      children: children,
+      location: state.location,
+      navigationType: state.action,
+      navigator: history,
+   });
+}
+exports.HistoryRouter = HistoryRouter;
+
+/***/ }),
+
 /***/ "./node_modules/redux-logger/dist/redux-logger.js":
 /*!********************************************************!*\
   !*** ./node_modules/redux-logger/dist/redux-logger.js ***!
@@ -42865,17 +43322,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/index.js");
-/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/App */ "./src/App.js");
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/store */ "./src/store/index.js");
+/* harmony import */ var redux_first_history_rr6__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! redux-first-history/rr6 */ "./node_modules/redux-first-history/rr6/index.js");
+/* harmony import */ var redux_first_history_rr6__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(redux_first_history_rr6__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/App */ "./src/App.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/store */ "./src/store/index.js");
+
+ // import { BrowserRouter } from 'react-router-dom'
 
 
 
 
 
-var store = (0,_store__WEBPACK_IMPORTED_MODULE_3__.getClientStore)();
+var _getClientStore = (0,_store__WEBPACK_IMPORTED_MODULE_4__.getClientStore)(),
+    store = _getClientStore.store,
+    history = _getClientStore.history;
+
 var root = document.getElementById("root");
-(0,react_dom_client__WEBPACK_IMPORTED_MODULE_1__.hydrateRoot)(root, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__.BrowserRouter, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_App__WEBPACK_IMPORTED_MODULE_2__["default"], {
+(0,react_dom_client__WEBPACK_IMPORTED_MODULE_1__.hydrateRoot)(root,
+/*#__PURE__*/
+// <BrowserRouter>
+// 	<App store={store}/>
+// </BrowserRouter>
+react__WEBPACK_IMPORTED_MODULE_0___default().createElement(redux_first_history_rr6__WEBPACK_IMPORTED_MODULE_2__.HistoryRouter, {
+  history: history
+}, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_App__WEBPACK_IMPORTED_MODULE_3__["default"], {
   store: store
 })));
 })();
