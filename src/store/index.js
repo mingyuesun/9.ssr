@@ -4,15 +4,13 @@ import promise from 'redux-promise'
 import logger from 'redux-logger'
 import counter from './reducers/counter'
 import user from './reducers/user'
+import auth from './reducers/auth'
 import clientRequest from '@/client/request'
 import serverRequest from '@/server/request'
 
 const clientThunk = thunk.withExtraArgument(clientRequest)
 const serverThunk = thunk.withExtraArgument(serverRequest)
-const reducers = {
-	counter,
-	user
-}
+const reducers = { counter, user, auth }
 const combinedReducers = combineReducers(reducers)
 
 export function getClientStore() {
