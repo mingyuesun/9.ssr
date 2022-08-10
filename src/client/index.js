@@ -1,17 +1,20 @@
 import React from 'react'
 import {hydrateRoot} from 'react-dom/client'
-// import { BrowserRouter } from 'react-router-dom'
 import { HistoryRouter as Router } from 'redux-first-history/rr6'
+import StyleContext from "isomorphic-style-loader-react18/StyleContext"
 import App from '@/App'
 import {getClientStore} from '@/store'
 const { store, history } = getClientStore()
 
 const root = document.getElementById("root")
-hydrateRoot(root, 
-	// <BrowserRouter>
-	// 	<App store={store}/>
-	// </BrowserRouter>
+const insertCss = (...styles) => {
+	const removeCss = styles.map(style => style._insertCss())
+	return () => removeCss.forEach(dispose => dispose())
+}
+hydrateRoot(root,
 	<Router history={history}>
-		<App store={store}/>
+		<StyleContext.Provider value={{insertCss}}>
+			<App store={store}/>
+		</StyleContext.Provider>
 	</Router>
 )
