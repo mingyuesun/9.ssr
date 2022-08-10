@@ -236,6 +236,29 @@ function Logout() {
 
 /***/ }),
 
+/***/ "./src/routes/NotFound.js":
+/*!********************************!*\
+  !*** ./src/routes/NotFound.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function NotFound() {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "NotFount");
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (NotFound);
+
+/***/ }),
+
 /***/ "./src/routes/Profile.js":
 /*!*******************************!*\
   !*** ./src/routes/Profile.js ***!
@@ -419,6 +442,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _routes_Login__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/routes/Login */ "./src/routes/Login.js");
 /* harmony import */ var _routes_Logout__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/routes/Logout */ "./src/routes/Logout.js");
 /* harmony import */ var _routes_Profile__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/routes/Profile */ "./src/routes/Profile.js");
+/* harmony import */ var _routes_NotFound__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/routes/NotFound */ "./src/routes/NotFound.js");
+
 
 
 
@@ -454,6 +479,9 @@ __webpack_require__.r(__webpack_exports__);
 }, {
   path: '/profile',
   element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_routes_Profile__WEBPACK_IMPORTED_MODULE_8__["default"], null)
+}, {
+  path: '*',
+  element: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_routes_NotFound__WEBPACK_IMPORTED_MODULE_9__["default"], null)
 }]);
 
 /***/ }),

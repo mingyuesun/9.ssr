@@ -7,6 +7,7 @@ import UserAdd from '@/routes/UserAdd'
 import Login from '@/routes/Login'
 import Logout from '@/routes/Logout'
 import Profile from '@/routes/Profile'
+import NotFound from '@/routes/NotFound'
 
 export default [
 	{
@@ -43,5 +44,9 @@ export default [
 	{
 		path: '/profile',
 		element: <Profile />
+	},
+	{
+		path: '*',
+		element: <NotFound />
 	}
 ]

@@ -36,6 +36,11 @@ app.get("*", (req, res) => {
       .concat(App.loadData && App.loadData(store))
       .filter(Boolean)
     Promise.all(loadDataPromise).then(() => {
+      if (req.url === '/profile' && (!store.getState().auth.user)) {
+        return res.redirect('/login')
+      } else if (routeMatches[routeMatches.length - 1].route.path === '*') {
+        res.statusCode = 404
+      }
       const html = renderToString(
         <StaticRouter location={req.url}>
           <App store={store} />
