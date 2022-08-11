@@ -4,6 +4,7 @@ import { StaticRouter } from "react-router-dom/server"
 import { matchRoutes } from "react-router-dom"
 import proxy from "express-http-proxy" //http://localhost:8000
 import StyleContext from "isomorphic-style-loader-react18/StyleContext"
+import { Helmet } from "react-helmet"
 import App from "@/App"
 import { getServerStore } from "@/store"
 import routesConfig from "@/routesConfig"
@@ -46,6 +47,7 @@ app.get("*", (req, res) => {
       const insertCss = (...styles) => styles.forEach(style => {
         css.add(style._getCss())
       })
+      let helmet = Helmet.renderStatic()
       const html = renderToString(
         <StaticRouter location={req.url}>
           <StyleContext.Provider value={{insertCss}}>
@@ -64,7 +66,9 @@ app.get("*", (req, res) => {
 					<meta charset="UTF-8">
 					<meta http-equiv="X-UA-Compatible" content="IE=edge">
 					<meta name="viewport" content="width=device-width, initial-scale=1.0">
-					<title>ssr</title>${stylesEl}
+					${helmet.title.toString()}
+          ${helmet.meta.toString()}
+          ${stylesEl}
 				</head>
 				<body>
 					<div id="root">${html}</div>

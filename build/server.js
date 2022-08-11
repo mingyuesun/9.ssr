@@ -153,21 +153,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var isomorphic_style_loader_react18_withStyles__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! isomorphic-style-loader-react18/withStyles */ "isomorphic-style-loader-react18/withStyles");
 /* harmony import */ var isomorphic_style_loader_react18_withStyles__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(isomorphic_style_loader_react18_withStyles__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Home_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Home.css */ "./src/routes/Home.css");
-/* harmony import */ var _Home_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_Home_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_helmet__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-helmet */ "react-helmet");
+/* harmony import */ var react_helmet__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_helmet__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _Home_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Home.css */ "./src/routes/Home.css");
+/* harmony import */ var _Home_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_Home_css__WEBPACK_IMPORTED_MODULE_3__);
  // import useStyles from "isomorphic-style-loader-react18/useStyles"
+
 
 
 
 
 function Home() {
   // useStyles(styles)
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: (_Home_css__WEBPACK_IMPORTED_MODULE_2___default().theme)
-  }, "Home");
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_helmet__WEBPACK_IMPORTED_MODULE_2__.Helmet, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("title", null, "\u9996\u9875\u6807\u9898"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("meta", {
+    name: "description",
+    content: "\u9996\u9875\u63CF\u8FF0"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: (_Home_css__WEBPACK_IMPORTED_MODULE_3___default().theme)
+  }, "Home"));
 }
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (isomorphic_style_loader_react18_withStyles__WEBPACK_IMPORTED_MODULE_1___default()((_Home_css__WEBPACK_IMPORTED_MODULE_2___default()))(Home));
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (isomorphic_style_loader_react18_withStyles__WEBPACK_IMPORTED_MODULE_1___default()((_Home_css__WEBPACK_IMPORTED_MODULE_3___default()))(Home));
 
 /***/ }),
 
@@ -1291,6 +1297,17 @@ module.exports = require("react-dom/server");
 
 /***/ }),
 
+/***/ "react-helmet":
+/*!*******************************!*\
+  !*** external "react-helmet" ***!
+  \*******************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("react-helmet");
+
+/***/ }),
+
 /***/ "react-redux":
 /*!******************************!*\
   !*** external "react-redux" ***!
@@ -1467,9 +1484,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var express_http_proxy__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(express_http_proxy__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var isomorphic_style_loader_react18_StyleContext__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! isomorphic-style-loader-react18/StyleContext */ "isomorphic-style-loader-react18/StyleContext");
 /* harmony import */ var isomorphic_style_loader_react18_StyleContext__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(isomorphic_style_loader_react18_StyleContext__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/App */ "./src/App.js");
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/store */ "./src/store/index.js");
-/* harmony import */ var _routesConfig__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/routesConfig */ "./src/routesConfig.js");
+/* harmony import */ var react_helmet__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-helmet */ "react-helmet");
+/* harmony import */ var react_helmet__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_helmet__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/App */ "./src/App.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/store */ "./src/store/index.js");
+/* harmony import */ var _routesConfig__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/routesConfig */ "./src/routesConfig.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -1493,6 +1512,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
+
 var express = __webpack_require__(/*! express */ "express");
 
 var app = express();
@@ -1503,12 +1523,12 @@ app.use("/api", express_http_proxy__WEBPACK_IMPORTED_MODULE_4___default()("http:
   }
 }));
 app.get("*", function (req, res) {
-  var routeMatches = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_3__.matchRoutes)(_routesConfig__WEBPACK_IMPORTED_MODULE_8__["default"], {
+  var routeMatches = (0,react_router_dom__WEBPACK_IMPORTED_MODULE_3__.matchRoutes)(_routesConfig__WEBPACK_IMPORTED_MODULE_9__["default"], {
     pathname: req.url
   });
 
   if (routeMatches) {
-    var _getServerStore = (0,_store__WEBPACK_IMPORTED_MODULE_7__.getServerStore)(req),
+    var _getServerStore = (0,_store__WEBPACK_IMPORTED_MODULE_8__.getServerStore)(req),
         store = _getServerStore.store; // 因为本次渲染可能会调用多个数据加载方法，进行多次接口调用，有的可能会成功，有的可能会失败
     // 默认情况下，如果有一个接口调用失败了，则整个应用会加载失败，所以将调用结果不论成功还是失败都变为成功
 
@@ -1519,7 +1539,7 @@ app.get("*", function (req, res) {
       }, function (error) {
         return error;
       });
-    }).concat(_App__WEBPACK_IMPORTED_MODULE_6__["default"].loadData && _App__WEBPACK_IMPORTED_MODULE_6__["default"].loadData(store)).filter(Boolean);
+    }).concat(_App__WEBPACK_IMPORTED_MODULE_7__["default"].loadData && _App__WEBPACK_IMPORTED_MODULE_7__["default"].loadData(store)).filter(Boolean);
     Promise.all(loadDataPromise).then(function () {
       if (req.url === '/profile' && !store.getState().auth.user) {
         return res.redirect('/login');
@@ -1539,13 +1559,14 @@ app.get("*", function (req, res) {
         });
       };
 
+      var helmet = react_helmet__WEBPACK_IMPORTED_MODULE_6__.Helmet.renderStatic();
       var html = (0,react_dom_server__WEBPACK_IMPORTED_MODULE_1__.renderToString)( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_router_dom_server__WEBPACK_IMPORTED_MODULE_2__.StaticRouter, {
         location: req.url
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((isomorphic_style_loader_react18_StyleContext__WEBPACK_IMPORTED_MODULE_5___default().Provider), {
         value: {
           insertCss: insertCss
         }
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_App__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_App__WEBPACK_IMPORTED_MODULE_7__["default"], {
         store: store
       }))));
       var stylesEl = '';
@@ -1554,7 +1575,7 @@ app.get("*", function (req, res) {
         stylesEl = "\n<style>".concat(_toConsumableArray(css).join(''), "</style>");
       }
 
-      res.send("\n\t\t\t\t<!DOCTYPE html>\n\t\t\t\t<html lang=\"en\">\n\t\t\t\t<head>\n\t\t\t\t\t<meta charset=\"UTF-8\">\n\t\t\t\t\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n\t\t\t\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n\t\t\t\t\t<title>ssr</title>".concat(stylesEl, "\n\t\t\t\t</head>\n\t\t\t\t<body>\n\t\t\t\t\t<div id=\"root\">").concat(html, "</div>\n          <script>\n            window.context = {state: ").concat(JSON.stringify(store.getState()), "}\n          </script>\n\t\t\t\t\t<script src=\"/client.js\"></script>\n\t\t\t\t</body>\n\t\t\t\t</html>\n\t\t"));
+      res.send("\n\t\t\t\t<!DOCTYPE html>\n\t\t\t\t<html lang=\"en\">\n\t\t\t\t<head>\n\t\t\t\t\t<meta charset=\"UTF-8\">\n\t\t\t\t\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n\t\t\t\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n\t\t\t\t\t".concat(helmet.title.toString(), "\n          ").concat(helmet.meta.toString(), "\n          ").concat(stylesEl, "\n\t\t\t\t</head>\n\t\t\t\t<body>\n\t\t\t\t\t<div id=\"root\">").concat(html, "</div>\n          <script>\n            window.context = {state: ").concat(JSON.stringify(store.getState()), "}\n          </script>\n\t\t\t\t\t<script src=\"/client.js\"></script>\n\t\t\t\t</body>\n\t\t\t\t</html>\n\t\t"));
     });
   } else {
     res.sendStatus(404);

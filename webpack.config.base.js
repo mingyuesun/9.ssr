@@ -38,7 +38,7 @@ module.exports = {
 						options: {
 							modules: {
 								mode: "local",
-								localIdentName: "[path][name]__[local]"
+								localIdentName: "[path][name]__[local]" // 生成新的模块化类名的名称模板
 							}
 						}
 					}
