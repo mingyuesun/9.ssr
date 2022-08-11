@@ -8,6 +8,7 @@ export function getUserList() {
 				type: SET_USER_LIST,
 				payload: users
 			})
+			return getState().user.list
 		})
 	}
 }

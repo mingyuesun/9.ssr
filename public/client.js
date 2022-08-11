@@ -409,28 +409,54 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function UserList() {
-  var list = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useSelector)(function (state) {
-    return state.user.list;
-  });
   var dispatch = (0,react_redux__WEBPACK_IMPORTED_MODULE_1__.useDispatch)();
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    if (list.length === 0) {
-      // api 接口提供用户列表服务，调用此接口返回数据放置到 store 中
-      dispatch((0,_store_actionCreators_user__WEBPACK_IMPORTED_MODULE_2__.getUserList)()); // dispatch()
-    }
-  }, []);
+  var resourceRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+
+  if (!resourceRef.current) {
+    var promise = dispatch((0,_store_actionCreators_user__WEBPACK_IMPORTED_MODULE_2__.getUserList)());
+    var resource = wrapPromise(promise);
+    resourceRef.current = resource;
+  }
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react__WEBPACK_IMPORTED_MODULE_0__.Suspense, {
+    fallback: /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Loading...")
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(User, {
+    resource: resourceRef.current
+  }));
+}
+
+function User(_ref) {
+  var resource = _ref.resource;
+  var list = resource.read();
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", null, list.map(function (user) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
       key: user.id
     }, user.name);
   }));
-} // 当前的路由组件在服务器端获取数据的方法
+}
 
-
-UserList.loadData = function (store) {
-  // 等此 Promise 完成后，store 中就有数据了， 即可以用 store 中的数据渲染带真实数据的组件，发给客户端
-  return store.dispatch((0,_store_actionCreators_user__WEBPACK_IMPORTED_MODULE_2__.getUserList)());
-};
+function wrapPromise(promise) {
+  var status = "pending";
+  var result;
+  var suspender = promise.then(function (r) {
+    status = "success";
+    result = r;
+  }, function (e) {
+    status = "error";
+    result = e;
+  });
+  return {
+    read: function read() {
+      if (status === "pending") {
+        throw suspender;
+      } else if (status === "error") {
+        throw result;
+      } else if (status === "success") {
+        return result;
+      }
+    }
+  };
+}
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (UserList);
 
@@ -645,6 +671,7 @@ function getUserList() {
         type: _actionTypes__WEBPACK_IMPORTED_MODULE_0__.SET_USER_LIST,
         payload: users
       });
+      return getState().user.list;
     });
   };
 }

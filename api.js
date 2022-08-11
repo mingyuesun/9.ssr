@@ -12,10 +12,12 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 const users = [{name: 'test1', id: 1},{name: 'test2', id: 2},{name: 'test3', id: 3}]
 app.get('/api/users', (req, res) => {
-	res.json({
-		success: true,
-		data: users
-	})
+	setTimeout(() => {
+		res.json({
+			success: true,
+			data: users
+		})
+	}, 3000)
 })
 app.post('/api/login', (req, res) => {
 	const user = req.body

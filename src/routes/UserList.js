@@ -1,17 +1,24 @@
-import React, {useEffect} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import React, {Suspense, useRef} from 'react'
+import {useDispatch} from 'react-redux'
 import { getUserList } from '@/store/actionCreators/user'
 
 function UserList() {
-	const list = useSelector(state => state.user.list)
 	const dispatch = useDispatch()
-	useEffect(() => {
-		if (list.length === 0) {
-			// api 接口提供用户列表服务，调用此接口返回数据放置到 store 中
-			dispatch(getUserList())
-			// dispatch()
-		}
-	}, [])
+	const resourceRef = useRef()
+	if (!resourceRef.current) {
+		const promise = dispatch(getUserList())
+		const resource = wrapPromise(promise)
+		resourceRef.current = resource
+	}
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<User resource={resourceRef.current}/>
+		</Suspense>
+	)
+}
+
+function User({ resource }) {
+	let list = resource.read()
 	return (
 		<ul>
 			{
@@ -21,10 +28,30 @@ function UserList() {
 	)
 }
 
-// 当前的路由组件在服务器端获取数据的方法
-UserList.loadData = (store) => {
-	// 等此 Promise 完成后，store 中就有数据了， 即可以用 store 中的数据渲染带真实数据的组件，发给客户端
-	return store.dispatch(getUserList())
+function wrapPromise(promise) {
+	let status = "pending"
+	let result;
+	let suspender = promise.then(
+		r => {
+			status = "success"
+			result = r
+		},
+		e => {
+			status = "error"
+			result = e
+		}
+	)
+	return {
+		read() {
+			if (status === "pending") {
+				throw suspender
+			} else if (status === "error") {
+				throw result
+			} else if (status === "success") {
+				return result
+			}
+		}
+	}
 }
 
 export default UserList

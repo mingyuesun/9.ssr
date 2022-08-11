@@ -1,5 +1,5 @@
 import React from "react"
-import { renderToString } from "react-dom/server"
+import { renderToPipeableStream } from "react-dom/server"
 import { StaticRouter } from "react-router-dom/server"
 import { matchRoutes } from "react-router-dom"
 import proxy from "express-http-proxy" //http://localhost:8000
@@ -38,51 +38,62 @@ app.get("*", (req, res) => {
       .concat(App.loadData && App.loadData(store))
       .filter(Boolean)
     Promise.all(loadDataPromise).then(() => {
-      if (req.url === '/profile' && (!store.getState().auth.user)) {
-        return res.redirect('/login')
-      } else if (routeMatches[routeMatches.length - 1].route.path === '*') {
+      if (req.url === "/profile" && !store.getState().auth.user) {
+        return res.redirect("/login")
+      } else if (routeMatches[routeMatches.length - 1].route.path === "*") {
         res.statusCode = 404
       }
       const css = new Set()
-      const insertCss = (...styles) => styles.forEach(style => {
-        css.add(style._getCss())
-      })
+      const insertCss = (...styles) =>
+        styles.forEach((style) => {
+          css.add(style._getCss())
+        })
+        let stylesEl = ''
+        if (css.size > 0) {
+          stylesEl = `\n<style>${[...css].join("")}</style>`
+        }
       let helmet = Helmet.renderStatic()
-      const html = renderToString(
+      const { pipe } = renderToPipeableStream(
         <StaticRouter location={req.url}>
-          <StyleContext.Provider value={{insertCss}}>
+          <StyleContext.Provider value={{ insertCss }}>
             <App store={store} />
           </StyleContext.Provider>
-        </StaticRouter>
+        </StaticRouter>,
+        {
+          bootscripts: ["/client.js"],
+          onShellReady() {
+            res.statusCode = 200
+            res.setHeader = ("Content-Type", "text/html;charset=utf8")
+            res.write(`
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta charset="UTF-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                ${helmet.title.toString()}
+                ${helmet.meta.toString()}
+                ${stylesEl}
+              </head>
+              <body>
+                <div id="root">
+            `)
+            pipe(res)
+            res.write(`
+                </div>
+                <script>
+                  window.context = {state: ${JSON.stringify(store.getState())}}
+                </script>
+              </body>
+              </html>
+            `)
+          }
+        }
       )
-      let stylesEl = ''
-      if (css.size > 0) {
-        stylesEl = `\n<style>${[...css].join('')}</style>`
-      }
-      res.send(`
-				<!DOCTYPE html>
-				<html lang="en">
-				<head>
-					<meta charset="UTF-8">
-					<meta http-equiv="X-UA-Compatible" content="IE=edge">
-					<meta name="viewport" content="width=device-width, initial-scale=1.0">
-					${helmet.title.toString()}
-          ${helmet.meta.toString()}
-          ${stylesEl}
-				</head>
-				<body>
-					<div id="root">${html}</div>
-          <script>
-            window.context = {state: ${JSON.stringify(store.getState())}}
-          </script>
-					<script src="/client.js"></script>
-				</body>
-				</html>
-		`)
     })
   } else {
-		res.sendStatus(404)
-	}
+    res.sendStatus(404)
+  }
 })
 
 app.listen(3000, () => console.log("server started on port 3000"))
