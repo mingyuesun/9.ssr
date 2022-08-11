@@ -1603,13 +1603,13 @@ app.get("*", function (req, res) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_App__WEBPACK_IMPORTED_MODULE_7__["default"], {
         store: store
       }))), {
-        bootscripts: ["/client.js"],
+        // bootscripts: ["/client.js"],
         onShellReady: function onShellReady() {
           res.statusCode = 200;
           res.setHeader = ("Content-Type", "text/html;charset=utf8");
-          res.write("\n              <!DOCTYPE html>\n              <html lang=\"en\">\n              <head>\n                <meta charset=\"UTF-8\">\n                <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n                <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n                ".concat(helmet.title.toString(), "\n                ").concat(helmet.meta.toString(), "\n                ").concat(stylesEl, "\n              </head>\n              <body>\n                <div id=\"root\">\n            "));
+          res.write("\n              <!DOCTYPE html>\n              <html lang=\"en\">\n              <head>\n                <meta charset=\"UTF-8\">\n                <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n                <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n                ".concat(helmet.title.toString(), "\n                ").concat(helmet.meta.toString(), "\n                ").concat(stylesEl, "\n              </head>\n              <body>\n                <div id=\"root\">"));
           pipe(res);
-          res.write("\n                </div>\n                <script>\n                  window.context = {state: ".concat(JSON.stringify(store.getState()), "}\n                </script>\n              </body>\n              </html>\n            "));
+          res.write("</div>\n                <script>\n                  window.context = {state: ".concat(JSON.stringify(store.getState()), "}\n                </script>\n                <script src=\"/client.js\"></script>\n              </body>\n              </html>\n            "));
         }
       }),
           pipe = _renderToPipeableStre.pipe;

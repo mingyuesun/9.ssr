@@ -60,7 +60,7 @@ app.get("*", (req, res) => {
           </StyleContext.Provider>
         </StaticRouter>,
         {
-          bootscripts: ["/client.js"],
+          // bootscripts: ["/client.js"],
           onShellReady() {
             res.statusCode = 200
             res.setHeader = ("Content-Type", "text/html;charset=utf8")
@@ -76,14 +76,13 @@ app.get("*", (req, res) => {
                 ${stylesEl}
               </head>
               <body>
-                <div id="root">
-            `)
+                <div id="root">`)
             pipe(res)
-            res.write(`
-                </div>
+            res.write(`</div>
                 <script>
                   window.context = {state: ${JSON.stringify(store.getState())}}
                 </script>
+                <script src="/client.js"></script>
               </body>
               </html>
             `)
