@@ -1603,7 +1603,6 @@ app.get("*", function (req, res) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_App__WEBPACK_IMPORTED_MODULE_7__["default"], {
         store: store
       }))), {
-        // bootscripts: ["/client.js"],
         onShellReady: function onShellReady() {
           res.statusCode = 200;
           res.setHeader = ("Content-Type", "text/html;charset=utf8");

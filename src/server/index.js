@@ -60,7 +60,6 @@ app.get("*", (req, res) => {
           </StyleContext.Provider>
         </StaticRouter>,
         {
-          // bootscripts: ["/client.js"],
           onShellReady() {
             res.statusCode = 200
             res.setHeader = ("Content-Type", "text/html;charset=utf8")
